@@ -1,0 +1,26 @@
+version: '2'
+services:
+    php:
+        build: 
+            context: php-fpm
+            args:
+               - TIMEZONE:Europe/Madrid
+        environment:
+            - UUID:1000
+            - GUID:120
+        ports:
+            - '9002:9000'
+        volumes:
+            - /srv/drive-sda/phpapps/symfonyApps:/var/www:cached
+            - /srv/drive-sda/phpapps/logs/symfonyApps/symfony:/var/www/var/logs:cached
+    nginx:
+        image: nginx:latest
+        ports:
+            - '7080:80'
+        links:
+            - php
+        volumes_from:
+            - php
+        volumes:
+            - /srv/drive-sda/config/symfonyApps/nginx:/etc/nginx/conf.d/
+            - /srv/drive-sda/phpapps/logs/symfonyApps/nginx/:/var/log/nginx:cached
